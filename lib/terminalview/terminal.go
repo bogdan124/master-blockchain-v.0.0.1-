@@ -13,10 +13,9 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/ttacon/chalk"
 )
 
 //function that takes input about diffrent options available
@@ -36,6 +35,9 @@ func TerminalView(node host.Host) {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print(">")
 	text, _ := reader.ReadString('\n')
+	//clear screen clscr from os
+	//clear screen
+	fmt.Print("\033[H\033[2J")
 	fmt.Println(text)
 	//remove \n from text
 	text = text[:len(text)-1]
@@ -62,79 +64,100 @@ func TerminalView(node host.Host) {
 }
 
 func theEntireMenu() {
-	fmt.Println("+--------------------+")
-	fmt.Println("|1.)Create new wallet|")
-	fmt.Println("+--------------------+")
-	fmt.Println("|2.)View your wallet |")
-	fmt.Println("+--------------------+")
-	fmt.Println("|3).Send coins       |")
-	fmt.Println("+--------------------+")
-	fmt.Println("|4.)View transactions|")
-	fmt.Println("+--------------------+")
-	fmt.Println("|5.)Mine             |")
-	fmt.Println("+--------------------+")
-	fmt.Println("|6.)Options          |")
-	fmt.Println("+--------------------+")
-	fmt.Println("|7.)Exit             |")
-	fmt.Println("+--------------------+")
-	fmt.Println("|8.)Add peers        |")
-	fmt.Println("+--------------------+")
+
+	lime := chalk.Green.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
+	fmt.Println(lime("+------------------------------+"))
+	fmt.Println(lime("|      Welcome to the menu     |"))
+	fmt.Println(lime("+----------------------------- +"))
+	fmt.Println(lime("|1. Create a new wallet        |"))
+	fmt.Println(lime("|2. View your wallet           |"))
+	fmt.Println(lime("|3. Send coins                 |"))
+	fmt.Println(lime("|4. View your transactions     |"))
+	fmt.Println(lime("|5. Mine                       |"))
+	fmt.Println(lime("|6. Options                    |"))
+	fmt.Println(lime("|7. Exit                       |"))
+	fmt.Println(lime("|8. Add peers                  |"))
+	fmt.Println(lime("+------------------------------+"))
 }
 
 func createWallet() {
-	fmt.Println("+-------------------+")
-	fmt.Println("|Create a new wallet|")
-	fmt.Println("+-------------------+")
+	lime := chalk.Green.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
+	fmt.Println(lime("+-------------------+"))
+	fmt.Println(lime("|Create a new wallet|"))
+	fmt.Println(lime("+-------------------+"))
 	_, pubString := cryptogeneration.CreatePairPublicPrivateKey()
-	fmt.Println("Your wallet has been created")
-	fmt.Println("Public key: ", pubString)
-	fmt.Println("check file generated")
+	fmt.Println(lime("Your wallet has been created"))
+	fmt.Println(lime("Public key: "), pubString)
+	fmt.Println(lime("check file generated"))
 
 }
 
 func viewWallet() {
-	fmt.Println("+----------------+")
-	fmt.Println("|View your wallet|")
-	fmt.Println("+----------------+")
+	lime := chalk.Green.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
+	fmt.Println(lime("+----------------+"))
+	fmt.Println(lime("|View your wallet|"))
+	fmt.Println(lime("+----------------+"))
 	//get wallet from file
 	publicKey, _ := cryptogeneration.GetPublicPrivateKeys()
-	fmt.Println("Your wallet: ", string(publicKey))
+	fmt.Println(lime("Your wallet: "), string(publicKey))
 	data := fileop.GetAllKeys("db/wallet/utxo")
-	fmt.Println("Your balance: ", data)
-	for _, utxo := range data {
-		var utxoStruct types.UTXO
-		json.Unmarshal(utxo, &utxoStruct)
-		fmt.Println("Index: ", utxoStruct.Index)
-		fmt.Println("PubKey: ", utxoStruct.PubKey)
-		fmt.Println("Txid: ", utxoStruct.Txid)
-		fmt.Println("Value: ", utxoStruct.Value)
+	var balance int64
+
+	//get balance from utxo
+	for _, value := range data {
+		utxoBytes := fileop.GetFromDB("db/wallet/utxo", value)
+		//convert bytes to struct
+		var transaction types.Transaction
+		json.Unmarshal(utxoBytes, &transaction)
+		//get the amount
+		for _, input := range transaction.Inputs {
+			//convert to float
+			balance += input.Value
+		}
+	}
+	//convert balance to string
+	balanceString := strconv.FormatInt(balance, 10)
+	fmt.Println(lime("+-------------------------------------------+"))
+	fmt.Println(lime("|Your balance: "), balanceString)
+	fmt.Println(lime("--------------------------------------------+"))
+	//print transaction
+	for _, value := range data {
+		utxoBytes := fileop.GetFromDB("db/wallet/utxo", value)
+		fmt.Println(lime("Tx: "), string(utxoBytes))
+		fmt.Println(lime("----------------------------------------------------------"))
 	}
 
 }
 
 func sendCoins(node host.Host) {
-	fmt.Println("+----------------+")
-	fmt.Println("|Send coins      |")
-	fmt.Println("+----------------+")
+	lime := chalk.Green.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
+	//red warning
+	red := chalk.Red.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
 
-	//read data from keyboard
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("connect peer addres: ")
-	peer, _ := reader.ReadString('\n')
-
-	//remove \n from text
-	peer = peer[:len(peer)-1]
+	fmt.Println(lime("+----------------+"))
+	fmt.Println(lime("|Send coins      |"))
+	fmt.Println(lime("+----------------+"))
 
 	//add to money to transaction
 	//read data from keyboard
-	reader = bufio.NewReader(os.Stdin)
-	fmt.Print("amount: ")
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print(lime("|amount: "))
 	amount, _ := reader.ReadString('\n')
 
 	//add destination wallet to transaction
 	//read data from keyboard
 	reader = bufio.NewReader(os.Stdin)
-	fmt.Print("destination wallet: ")
+	fmt.Print(lime("|destination wallet: "))
 	walletDest, _ := reader.ReadString('\n')
 
 	//read your public key from file
@@ -145,7 +168,7 @@ func sendCoins(node host.Host) {
 	//convert string to int64
 	amountInt, err := strconv.ParseInt(amount[:len(amount)-1], 10, 64)
 	if err != nil {
-		fmt.Println("error converting string to int64")
+		fmt.Println(red("|error converting string to int64"))
 	}
 	//include CreateTransaction from transaction
 	transaction := blockchain.CreateTransaction(privateKey, walletDest, publicKey, amountInt, 0, 0)
@@ -153,16 +176,21 @@ func sendCoins(node host.Host) {
 	tx, _ := json.Marshal(transaction)
 	//add \n at blkockbytes
 	tx = []byte(string(tx) + "\n")
-
+	fmt.Println(lime("|Transaction created: "), string(tx))
+	//print line
+	fmt.Println(lime("----------------------------------------------------------"))
 	//send to all peers
 	utils.SendToAllPeers(node, tx, 1)
 
 }
 
 func viewTransactions() {
-	fmt.Println("+-----------------+")
-	fmt.Println("|View transactions|")
-	fmt.Println("+-----------------+")
+	lime := chalk.Green.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
+	fmt.Println(lime("+-----------------+"))
+	fmt.Println(lime("|View transactions|"))
+	fmt.Println(lime("+-----------------+"))
 
 	//read valide transaction db and display
 	tx_valide_pool := fileop.GetAllKeys("db/mempool/valide")
@@ -171,17 +199,24 @@ func viewTransactions() {
 		//convert bytes to struct
 		var transaction types.Transaction
 		json.Unmarshal(tx, &transaction)
-		fmt.Println("Blocknumber: ", transaction.BlockNumber)
-		fmt.Println("Hash: ", transaction.Hash)
-		fmt.Println("Inputs: ", transaction.Inputs)
-		fmt.Println("Outputs: ", transaction.Outputs)
+		fmt.Println(lime("|Blocknumber: "), transaction.BlockNumber)
+		fmt.Println(lime("|Hash: "), transaction.Hash)
+		fmt.Println(lime("|Inputs: "), transaction.Inputs)
+		fmt.Println(lime("|Outputs: "), transaction.Outputs)
 	}
 }
 
 func mine(node host.Host) {
-	fmt.Println("+----------------+")
-	fmt.Println("|Mine            |")
-	fmt.Println("+----------------+")
+	lime := chalk.Green.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
+		//red warning
+	red := chalk.Red.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
+	fmt.Println(lime("+----------------+"))
+	fmt.Println(lime("|Mine            |"))
+	fmt.Println(lime("+----------------+"))
 
 	//get address
 	pub, _ := cryptogeneration.GetPublicPrivateKeys()
@@ -191,7 +226,7 @@ func mine(node host.Host) {
 	//convert struct to bytes
 	blkockBytesSec, err := json.Marshal(blk)
 	if err != nil {
-		fmt.Println("error converting struct to bytes")
+		fmt.Println(red("|error converting struct to bytes"))
 	}
 	//add \n at blkockbytes
 	blkockBytes := []byte(string(blkockBytesSec) + "\n")
@@ -202,19 +237,19 @@ func mine(node host.Host) {
 	data := fileop.GetFromDB("db/blocks/blockchain", bt)
 	var block types.Block
 	json.Unmarshal(data, &block)
-	fmt.Println("__________________________________")
-	fmt.Println("|Blocknumber: ", block.Index)
-	fmt.Println("|Hash: ", block.Hash)
-	fmt.Println("|Miner: ", block.Miner)
-	fmt.Println("|Timestamp: ", block.Timestamp)
-	fmt.Println("|Nonce: ", block.Nonce)
+	fmt.Println(lime("+-----------------------------------------------------------"))
+	fmt.Println(lime("|Blocknumber: "), block.Index)
+	fmt.Println(lime("|Hash: "), block.Hash)
+	fmt.Println(lime("|Miner: "), block.Miner)
+	fmt.Println(lime("|Timestamp: "), block.Timestamp)
+	fmt.Println(lime("|Nonce: "), block.Nonce)
 
 	//get public key
 	publicKey, _ := cryptogeneration.GetPublicPrivateKeys()
 
-	fmt.Println("+++++++++++++++++++++++++++++++++++++")
-	fmt.Println("Transactions in block: ")
-	fmt.Println("+++++++++++++++++++++++++++++++++++++")
+	fmt.Println(lime("+++++++++++++++++++++++++++++++++++++"))
+	fmt.Println(lime("Transactions in block: "))
+	fmt.Println(lime("+++++++++++++++++++++++++++++++++++++"))
 	merkle.RebuildTree(blk.Tx, blk.MerkleRoot)
 	merkle.PrintLeafs(blk.Tx)
 
@@ -232,23 +267,35 @@ func mine(node host.Host) {
 }
 
 func options() {
-	fmt.Println("+----------------+")
-	fmt.Println("|Options         |")
-	fmt.Println("+----------------+")
+	lime := chalk.Green.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
+	fmt.Println(lime("+----------------+"))
+	fmt.Println(lime("|Options         |"))
+	fmt.Println(lime("+----------------+"))
 
 }
 
 func exit() {
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
-	<-ch
-	fmt.Println("Received signal, shutting down...")
+	//red warning
+	red := chalk.Red.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
+
+	fmt.Println(red("+---------------------------------+"))
+	fmt.Println(red("|Exiting...                       |"))
+	fmt.Println(red("|Received signal, shutting down...|"))
+	fmt.Println(red("+---------------------------------+"))
+	os.Exit(0)
 }
 
 func addPeers(node host.Host) {
-	fmt.Println("+----------------+")
-	fmt.Println("|Add peers       |")
-	fmt.Println("+----------------+")
+	lime := chalk.Green.NewStyle().
+		WithTextStyle(chalk.Bold).
+		Style
+	fmt.Println(lime("+----------------+"))
+	fmt.Println(lime("|Add peers       |"))
+	fmt.Println(lime("+----------------+"))
 
 	reader := bufio.NewReader(os.Stdin)
 	//read int from keyboards

@@ -1,0 +1,80 @@
+=============== Nov 22, 2022 (EET) ===============
+11:57:15.144142 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+11:57:15.151699 db@open opening
+11:57:15.151961 version@stat F·[] S·0B[] Sc·[]
+11:57:15.152682 db@janitor F·2 G·0
+11:57:15.152714 db@open done T·990.127µs
+11:57:15.152739 db@close closing
+11:57:15.152772 db@close done T·32.473µs
+=============== Nov 22, 2022 (EET) ===============
+11:58:35.055800 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+11:58:35.056161 version@stat F·[] S·0B[] Sc·[]
+11:58:35.056168 db@open opening
+11:58:35.056204 journal@recovery F·1
+11:58:35.061605 journal@recovery recovering @1
+11:58:35.062137 version@stat F·[] S·0B[] Sc·[]
+11:58:35.063958 db@janitor F·2 G·0
+11:58:35.063967 db@open done T·7.795107ms
+11:58:35.063984 db@close closing
+11:58:35.064000 db@close done T·15.199µs
+=============== Nov 22, 2022 (EET) ===============
+12:17:49.145144 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+12:17:49.145265 version@stat F·[] S·0B[] Sc·[]
+12:17:49.145270 db@open opening
+12:17:49.145286 journal@recovery F·1
+12:17:49.145647 journal@recovery recovering @2
+12:17:49.152528 memdb@flush created L0@4 N·1 S·207B "/ip..i1\n,v1":"/ip..i1\n,v1"
+12:17:49.152660 version@stat F·[1] S·207B[207B] Sc·[0.25]
+12:17:49.154387 db@janitor F·3 G·0
+12:17:49.154406 db@open done T·9.132097ms
+12:17:49.154460 db@close closing
+12:17:49.154481 db@close done T·20.681µs
+=============== Nov 22, 2022 (EET) ===============
+13:17:38.157384 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+13:17:38.157506 version@stat F·[1] S·207B[207B] Sc·[0.25]
+13:17:38.157509 db@open opening
+13:17:38.157528 journal@recovery F·1
+13:17:38.157919 journal@recovery recovering @5
+13:17:38.164807 memdb@flush created L0@7 N·1 S·198B "/ip..i1\n,d3":"/ip..i1\n,d3"
+13:17:38.164968 version@stat F·[2] S·405B[405B] Sc·[0.50]
+13:17:38.166820 db@janitor F·4 G·0
+13:17:38.166850 db@open done T·9.333466ms
+13:17:38.166906 db@close closing
+13:17:38.166937 db@close done T·31.128µs
+=============== Nov 22, 2022 (EET) ===============
+13:19:15.582962 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+13:19:15.583216 version@stat F·[2] S·405B[405B] Sc·[0.50]
+13:19:15.583228 db@open opening
+13:19:15.583293 journal@recovery F·1
+13:19:15.583470 journal@recovery recovering @8
+13:19:15.584584 version@stat F·[2] S·405B[405B] Sc·[0.50]
+13:19:15.592866 db@janitor F·4 G·0
+13:19:15.592878 db@open done T·9.644059ms
+13:19:15.592919 db@close closing
+13:19:15.592934 db@close done T·14.81µs
+=============== Nov 22, 2022 (EET) ===============
+13:19:48.058839 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+13:19:48.058886 version@stat F·[2] S·405B[405B] Sc·[0.50]
+13:19:48.058890 db@open opening
+13:19:48.058911 journal@recovery F·1
+13:19:48.059640 journal@recovery recovering @10
+13:19:48.060394 memdb@flush created L0@12 N·1 S·207B "/ip..E3\n,v5":"/ip..E3\n,v5"
+13:19:48.061366 version@stat F·[3] S·612B[612B] Sc·[0.75]
+13:19:48.063141 db@janitor F·5 G·0
+13:19:48.063151 db@open done T·4.256828ms
+13:19:48.063168 db@close closing
+13:19:48.063186 db@close done T·17.464µs
+=============== Nov 22, 2022 (EET) ===============
+13:19:57.909277 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+13:19:57.909329 version@stat F·[3] S·612B[612B] Sc·[0.75]
+13:19:57.909332 db@open opening
+13:19:57.909355 journal@recovery F·1
+13:19:57.909690 journal@recovery recovering @13
+13:19:57.910332 memdb@flush created L0@15 N·1 S·207B "/ip..E3\n,v7":"/ip..E3\n,v7"
+13:19:57.910697 version@stat F·[4] S·819B[819B] Sc·[1.00]
+13:19:57.912364 db@janitor F·6 G·0
+13:19:57.912378 db@open done T·3.040844ms
+13:19:57.912413 db@close closing
+13:19:57.912425 table@compaction L0·2 -> L1·0 S·414B Q·9
+13:19:57.912432 table@build exiting
+13:19:57.912455 db@close done T·41.638µs
