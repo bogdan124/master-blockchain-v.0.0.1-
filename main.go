@@ -15,13 +15,29 @@ import (
 func main() {
 	fileop.EraseAllKeys("db/peers")
 
-	//testFile()
+	///testFile()
 	network.RunSourceNode()
+	//testKeySign()
 	//testBlockchain()
 	//test()
 	//testKeys()
 
 }
+
+func testKeySign() {
+	//generate public private key
+	pub, priv := cryptogeneration.CreatePairPublicPrivateKey()
+	//sign a message
+	signature := cryptogeneration.SingUsingKey(priv, pub, []byte("asdasdadasdasdsa"))
+	//verify signature
+	if cryptogeneration.VerifySign(signature, pub, []byte("asdasdadasdasdsa")) {
+		fmt.Println("Signature is valid")
+	} else {
+		fmt.Println("Signature is not valid")
+	}
+
+}
+
 func testFile() {
 
 	//get address

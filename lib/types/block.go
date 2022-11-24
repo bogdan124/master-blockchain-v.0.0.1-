@@ -29,6 +29,20 @@ type Transaction struct {
 	Outputs     []TxOutput
 }
 
+type TxInput struct {
+	Txid      int64
+	Value     int64
+	Signature string
+	PubKey    string
+}
+
+type TxOutput struct {
+	Txid       int64
+	Value      int64
+	PubKeyHash string
+	Signature  string
+}
+
 //CalculateHash hashes the values of a TestContent
 func (t Transaction) CalculateHash() ([]byte, error) {
 	h := sha256.New()
@@ -42,20 +56,6 @@ func (t Transaction) CalculateHash() ([]byte, error) {
 //Equals tests for equality of two Contents
 func (t Transaction) Equals(other merkletree.Content) (bool, error) {
 	return t.Hash == other.(Transaction).Hash, nil
-}
-
-type TxInput struct {
-	Txid      int64
-	Value     int64
-	Signature string
-	PubKey    string
-}
-
-type TxOutput struct {
-	Txid       int64
-	Value      int64
-	PubKeyHash string
-	Signature  string
 }
 
 type UTXO struct {

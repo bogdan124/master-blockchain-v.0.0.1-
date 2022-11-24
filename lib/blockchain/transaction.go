@@ -36,6 +36,9 @@ func CreateTransaction(privateKey []byte, addressTo string, addressFrom []byte, 
 			Signature: "",
 			PubKey:    "coinbase",
 		})
+		//fmt.Println("??privateKey", privateKey)
+		//fmt.Println("??addressFrom", []byte(addressTo))
+		//fmt.Println("??bnumber", bnumber)
 		saveSig := cryptogeneration.SingUsingKey(privateKey, []byte(addressTo), bnumber)
 		transaction.Outputs = append(transaction.Outputs, types.TxOutput{
 			Txid:       0,
@@ -47,6 +50,9 @@ func CreateTransaction(privateKey []byte, addressTo string, addressFrom []byte, 
 		transaction.Hash = cryptogeneration.GenerateSha256(jsonTransaction)
 		return transaction
 	} else {
+		//fmt.Println("??-privateKey", privateKey)
+		//fmt.Println("??-addressFrom", []byte(addressTo))
+		//fmt.Println("??-bnumber", bnumber)
 		//transaction from a wallet
 		saveSig := cryptogeneration.SingUsingKey(privateKey, []byte(addressFrom), bnumber)
 		outputTx := []types.TxOutput{}
@@ -59,8 +65,16 @@ func CreateTransaction(privateKey []byte, addressTo string, addressFrom []byte, 
 			Inputs:      inputTx,
 			Outputs:     outputTx,
 		}
+		//add to inputs from transaction
+		transactionAllWalet := GetPastTransactions(addressFrom)
+		//loop and get all inputs
+		for _, tx := range transactionAllWalet {
+			for _, in := range tx.Inputs {
+				transaction.Inputs = append(transaction.Inputs, in)
 
-		transaction.Inputs = GetPastTransactions(addressFrom)
+			}
+		}
+
 		balance := GetBalanceFromInputsForWallet(addressFrom)
 		if balance < value {
 			fmt.Println("Not enough balance")
@@ -95,8 +109,11 @@ func CreateTransaction(privateKey []byte, addressTo string, addressFrom []byte, 
 func ValidateTransaction(tx types.Transaction) bool {
 	//check if the transaction output singature is valid
 	for _, output := range tx.Outputs {
+		//convert int 64 to byte
+		bnumber := make([]byte, 8)
+		binary.LittleEndian.PutUint64(bnumber, uint64(output.Value))
 		//validate signature
-		if !cryptogeneration.VerifySign([]byte(output.PubKeyHash), []byte(output.Signature), []byte(output.PubKeyHash)) {
+		if !cryptogeneration.VerifySign([]byte(output.Signature), []byte(output.PubKeyHash), bnumber) {
 			fmt.Println("Invalid signature")
 			return false
 		}
@@ -114,20 +131,20 @@ func AddMemPoolTransaction(transaction types.Transaction) {
 
 func AddYourTransactionToWallet(tx types.Transaction, walletPubKey string) {
 	//check if the transaction input your walletpubkey is equel with output pubkey
-	fmt.Println("wallet", tx.Outputs)
+	//fmt.Println("wallet", tx.Outputs)
 	for _, out := range tx.Outputs {
-		fmt.Println("Public key :", out.PubKeyHash)
+		//fmt.Println("Public key :", out.PubKeyHash)
 		if out.PubKeyHash == walletPubKey {
 			//marshal transaction to json
 			jsonTransaction, _ := json.Marshal(tx)
-			fmt.Println("jsonTransaction", jsonTransaction)
+			//fmt.Println("jsonTransaction", jsonTransaction)
 			//add transaction to wallet usr
 			fileop.PutInDB("db/wallet/utxo", []byte(tx.Hash), jsonTransaction)
 		}
 	}
 }
 
-func GetPastTransactions(address []byte) []types.TxInput {
+func GetPastTransactions(address []byte) []types.Transaction {
 	//get all transaction from badgerdb
 	//return a list of transaction
 	//read db/wallet/utxo from db
@@ -136,14 +153,16 @@ func GetPastTransactions(address []byte) []types.TxInput {
 		return nil
 	}
 	//list of transaction
-	var tx []types.TxInput
+	var tx []types.Transaction
 	//read all transaction
 	for _, key := range keys {
 		//read transaction
 		transaction := fileop.GetFromDB("db/wallet/utxo", key)
 		//unmarshal transaction
-		var txInput types.TxInput
+		var txInput types.Transaction
 		json.Unmarshal(transaction, &txInput)
+		//unmarshal transaction
+		//	fmt.Println("transaction", transaction)
 		//append transaction to list of transaction
 		tx = append(tx, txInput)
 	}
@@ -160,13 +179,13 @@ func GetBalanceFromInputsForWallet(address []byte) int64 {
 	}
 	//balance
 	var balance int64
-	//read all transaction
-	for _, input := range tx {
-		//read transaction
-		//unmarshal transaction
-		//add value to balance
-		balance += input.Value
+
+	for _, tx := range tx {
+		for _, out := range tx.Outputs {
+			balance += out.Value
+		}
 	}
+
 	//return balance
 	return balance
 }

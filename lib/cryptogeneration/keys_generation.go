@@ -177,7 +177,10 @@ func SingUsingKey(privateKey []byte, publicKey []byte, data []byte) []byte {
 
 func VerifySign(signature []byte, publicKey []byte, data []byte) bool {
 
-	pubKey, err := crypto.UnmarshalPublicKey(publicKey)
+	//decode public key
+	pubKeyBytes, _ := hex.DecodeString(string(publicKey))
+	//unmarshal public key
+	pubKey, err := crypto.UnmarshalPublicKey(pubKeyBytes)
 	if err != nil {
 		log.Printf("Error unmarshalling public key: %s", err)
 		return false

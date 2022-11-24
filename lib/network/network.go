@@ -36,17 +36,24 @@ func ReadTransactionProtocol(s network.Stream) error {
 	if err != nil {
 		return nil
 	}
+	fmt.Println("test", transaction)
 	//if transaction is not null
 	if transaction.Outputs != nil {
+		fmt.Println("123 _enter \n")
 
 		//check if transaction is valid
 		if blockchain.ValidateTransaction(transaction) {
+			fmt.Println("123 _enter -second \n")
 			//get your public key
 			pub, _ := cryptogeneration.GetPublicPrivateKeys()
-
+			fmt.Println("123 _enter -third \n")
 			blockchain.AddYourTransactionToWallet(transaction, string(pub))
+			fmt.Println("123 _enter -fourht \n")
 			blockchain.AddMemPoolTransaction(transaction)
+			fmt.Println("123 _enter -fiveee \n")
 
+		} else {
+			fmt.Println("Transaction is not valid")
 		}
 	} else {
 		fmt.Println("Transaction is null")

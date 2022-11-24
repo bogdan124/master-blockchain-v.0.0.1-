@@ -234,8 +234,6 @@ func ValidateBlock(bl types.Block) bool {
 	hash := CalculateHash(block)
 
 	fmt.Println("====Block is validated====")
-	fmt.Println("Hash: ++", bl, "++")
-	fmt.Println("-", block, "-")
 
 	//print the hash
 	fmt.Println(hash)

@@ -210,8 +210,8 @@ func GetLastKeyBeta(dbname string) []byte {
 	var key []byte
 	for ok := iter.Seek(key); ok; ok = iter.Next() {
 		key = iter.Key()
-		val := iter.Value()
-		fmt.Printf("key=%s, value=%s", string(key), string(val))
+		//val := iter.Value()
+		//fmt.Printf("key=%s, value=%s", string(key), string(val))
 	}
 
 	iter.Release() // Note: you should first get data and then release iterator
